@@ -71,19 +71,37 @@ class WalmartSpider(Spider):
             'product_url': response.url
         }
 
-        yield Request(
+        
+        # Get branch 3124
+        request = Request(
             url='https://www.walmart.ca/api/product-page/find-in-store?'
-                f'latitude=48.4120872&longitude=-89.2413988&lang=en&upc={upc}',
+            f'latitude=48.4120872&longitude=-89.2413988&lang=en&upc={upc}',
             cb_kwargs=product,
-            callback=self.parse_branch
+            meta={'upc': upc},
+            callback=self.branch_3106
+        )
+
+        yield request
+        
+    def branch_3106(self, response, **kwargs):
+        item = response.text
+        upc = response.meta['upc']
+        # Get branch 3106
+        yield Request(
+                url='https://www.walmart.ca/api/product-page/find-in-store?'
+                f'latitude=43.6562242&longitude=-79.4355773&lang=en&upc={upc}',
+                cb_kwargs=kwargs,
+                meta={'item':item},
+                callback=self.parse_branch
         )
 
     def parse_branch(self, response, **kwargs):
-        json_data = json.loads(response.text)
-
+        
+        json_branch_3106 = json.loads(response.text)
+        json_branch_3124 = json.loads(response.meta['item'])
         branches = []
 
-        for branch in json_data['info']:
+        for branch in json_branch_3106['info'] + json_branch_3124['info']:
             if branch['id'] in self.allowed_branches:
                 branches.append({
                     'branch': branch['id'],

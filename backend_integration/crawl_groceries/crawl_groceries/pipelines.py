@@ -15,13 +15,19 @@ class CrawlGroceriesPipeline:
         branches = item.pop('branches')
         product = Product(**item)
 
-        self.session.add(product)
-        self.session.commit()
+        self.register_data(product)
 
         for branch_data in branches:
             branch_product = BranchProduct(
                 product_id=product.id,
                 **branch_data
             )
-            self.session.add(branch_product)
+            self.register_data(branch_product)
+
+    def register_data(self, data):
+
+        try:
+            self.session.add(data)
             self.session.commit()
+        except:
+            self.session.rollback()

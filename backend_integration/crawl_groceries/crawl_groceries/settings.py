@@ -13,7 +13,9 @@ BOT_NAME = 'crawl_groceries'
 
 SPIDER_MODULES = ['crawl_groceries.spiders']
 NEWSPIDER_MODULE = 'crawl_groceries.spiders'
-
+LOG_LEVEL = 'ERROR'  # to only display errors
+LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s'
+LOG_FILE = 'log_errors.log'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'crawl_groceries'
@@ -27,7 +29,7 @@ ROBOTSTXT_OBEY = True
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+# DOWNLOAD_DELAY = 2
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
